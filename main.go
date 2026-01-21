@@ -49,6 +49,53 @@ func main() {
 		}
 	}).Methods("GET")
 
+	// API endpoint for chart data
+	r.HandleFunc("/api/data", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		data := map[string]interface{}{
+			"labels": []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"},
+			"datasets": []map[string]interface{}{
+				{
+					"label":           "Food & Beverages",
+					"data":            []int{100, 102, 105, 108, 110, 113, 115, 118, 120, 121, 123, 125},
+					"borderColor":     "#667eea",
+					"backgroundColor": "rgba(102, 126, 234, 0.1)",
+				},
+				{
+					"label":           "Personal Care",
+					"data":            []int{100, 101, 102, 103, 105, 106, 108, 109, 110, 111, 112, 114},
+					"borderColor":     "#764ba2",
+					"backgroundColor": "rgba(118, 75, 162, 0.1)",
+				},
+				{
+					"label":           "Household Items",
+					"data":            []int{100, 101, 103, 104, 106, 107, 108, 109, 110, 111, 111, 112},
+					"borderColor":     "#f093fb",
+					"backgroundColor": "rgba(240, 147, 251, 0.1)",
+				},
+				{
+					"label":           "Electronics",
+					"data":            []int{100, 99, 98, 97, 97, 96, 96, 95, 95, 94, 94, 93},
+					"borderColor":     "#4facfe",
+					"backgroundColor": "rgba(79, 172, 254, 0.1)",
+				},
+				{
+					"label":           "Clothing",
+					"data":            []int{100, 100, 101, 102, 103, 104, 105, 106, 107, 108, 108, 109},
+					"borderColor":     "#43e97b",
+					"backgroundColor": "rgba(67, 233, 123, 0.1)",
+				},
+				{
+					"label":           "Transportation",
+					"data":            []int{100, 103, 106, 109, 112, 114, 116, 117, 118, 119, 120, 122},
+					"borderColor":     "#fa709a",
+					"backgroundColor": "rgba(250, 112, 154, 0.1)",
+				},
+			},
+		}
+		json.NewEncoder(w).Encode(data)
+	}).Methods("GET")
+
 	// This will serve files under http://localhost:8000/<filename>
 	var handler http.Handler
 	if useEmbedded {

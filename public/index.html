@@ -169,63 +169,20 @@
         document.getElementById('copyright').textContent =
             `Consumer Goods Price Tracker © ${new Date().getFullYear()}`;
 
-        // Price data for consumer goods over 12 months
-        const ctx = document.getElementById('priceChart').getContext('2d');
-        const chart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                datasets: [
-                    {
-                        label: 'Food & Beverages',
-                        data: [100, 102, 105, 108, 110, 113, 115, 118, 120, 121, 123, 125],
-                        borderColor: '#667eea',
-                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Personal Care',
-                        data: [100, 101, 102, 103, 105, 106, 108, 109, 110, 111, 112, 114],
-                        borderColor: '#764ba2',
-                        backgroundColor: 'rgba(118, 75, 162, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Household Items',
-                        data: [100, 101, 103, 104, 106, 107, 108, 109, 110, 111, 111, 112],
-                        borderColor: '#f093fb',
-                        backgroundColor: 'rgba(240, 147, 251, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Electronics',
-                        data: [100, 99, 98, 97, 97, 96, 96, 95, 95, 94, 94, 93],
-                        borderColor: '#4facfe',
-                        backgroundColor: 'rgba(79, 172, 254, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Clothing',
-                        data: [100, 100, 101, 102, 103, 104, 105, 106, 107, 108, 108, 109],
-                        borderColor: '#43e97b',
-                        backgroundColor: 'rgba(67, 233, 123, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    },
-                    {
-                        label: 'Transportation',
-                        data: [100, 103, 106, 109, 112, 114, 116, 117, 118, 119, 120, 122],
-                        borderColor: '#fa709a',
-                        backgroundColor: 'rgba(250, 112, 154, 0.1)',
-                        tension: 0.4,
-                        fill: true
-                    }
-                ]
-            },
+        // Fetch price data from API and render chart
+        fetch('/api/data')
+            .then(res => res.json())
+            .then(apiData => {
+                // Add tension and fill properties to datasets
+                apiData.datasets.forEach(dataset => {
+                    dataset.tension = 0.4;
+                    dataset.fill = true;
+                });
+
+                const ctx = document.getElementById('priceChart').getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'line',
+                    data: apiData,
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
@@ -285,8 +242,14 @@
                     mode: 'nearest',
                     axis: 'x',
                     intersect: false
+                    }
                 }
-            }
+            });
+        })
+        .catch(err => {
+            console.error('Failed to load chart data:', err);
+            document.getElementById('priceChart').parentElement.innerHTML =
+                '<p style="text-align: center; color: #999; padding: 2rem;">Failed to load chart data</p>';
         });
     </script>
 </body>
