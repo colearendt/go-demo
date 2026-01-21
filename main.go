@@ -18,10 +18,12 @@ func main() {
 	var dir string
 	var useEmbedded bool
 	var showVersion bool
+	var addr string
 
 	flag.StringVar(&dir, "dir", "./public/", "the directory to serve files from. Defaults to the current dir")
 	flag.BoolVar(&useEmbedded, "embedded", hasEmbedded, "use embedded files instead of reading from disk")
 	flag.BoolVar(&showVersion, "version", false, "print version and exit")
+	flag.StringVar(&addr, "addr", "127.0.0.1:8000", "address to listen on (host:port)")
 	flag.Parse()
 
 	if showVersion {
@@ -62,7 +64,7 @@ func main() {
 
 	srv := &http.Server{
 		Handler: r,
-		Addr:    "127.0.0.1:8000",
+		Addr:    addr,
 		// Good practice: enforce timeouts for servers you create!
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
