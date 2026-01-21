@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/gorilla/mux"
@@ -32,6 +33,19 @@ func main() {
 		log.Fatal("Embedded files requested but not available. Build with -tags embed to enable.")
 	}
 	r := mux.NewRouter()
+
+	// API endpoint for version
+	r.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		if r.URL.Query().Get("format") == "plain" {
+			w.Header().Set("Content-Type", "text/plain")
+			fmt.Fprintln(w, version)
+		} else {
+			w.Header().Set("Content-Type", "application/json")
+			json.NewEncoder(w).Encode(map[string]string{
+				"version": version,
+			})
+		}
+	}).Methods("GET")
 
 	// This will serve files under http://localhost:8000/<filename>
 	var handler http.Handler
