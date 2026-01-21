@@ -1,3 +1,5 @@
+// the "embed" tag decides whether to include this file or no_embed.go
+// go build -tags embed
 //go:build embed
 
 package main
