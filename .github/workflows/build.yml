@@ -39,7 +39,15 @@ jobs:
           if [ "${{ matrix.goos }}" = "windows" ]; then
             OUTPUT_NAME="${OUTPUT_NAME}.exe"
           fi
-          go build -tags embed -o $OUTPUT_NAME
+
+          # Set version from git tag or commit SHA
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+            VERSION="${{ github.ref_name }}"
+          else
+            VERSION="${{ github.sha }}"
+          fi
+
+          go build -tags embed -ldflags "-X main.version=${VERSION}" -o $OUTPUT_NAME
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4

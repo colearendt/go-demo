@@ -2,20 +2,31 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"github.com/gorilla/mux"
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
+
+var version = "dev"
 
 func main() {
 	var dir string
 	var useEmbedded bool
+	var showVersion bool
 
 	flag.StringVar(&dir, "dir", "./public/", "the directory to serve files from. Defaults to the current dir")
 	flag.BoolVar(&useEmbedded, "embedded", hasEmbedded, "use embedded files instead of reading from disk")
+	flag.BoolVar(&showVersion, "version", false, "print version and exit")
 	flag.Parse()
+
+	if showVersion {
+		fmt.Printf("go-demo version %s\n", version)
+		os.Exit(0)
+	}
 
 	if useEmbedded && !hasEmbedded {
 		log.Fatal("Embedded files requested but not available. Build with -tags embed to enable.")
